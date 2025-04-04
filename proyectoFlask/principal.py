@@ -7,7 +7,7 @@ import cv2
 from albumentations.pytorch import ToTensorV2
 from torchvision import models
 import  torch.nn as nn
-
+from  algoritmoRiego import *
 if torch.cuda.is_available():
     device = 'cuda'
 else:
@@ -73,13 +73,12 @@ class HuertoVirtual:
                     "tipo": planta["tipo"],
                     "requerimientos": planta["requerimientos"],
                     "coordenadas": (i, j),
-                    "sensor": self.obtener_datos_sensor(),
+                    "sensor": self.obtener_datos_sensor_suelo(),
                     "foto":  self.obtencion_img(planta["tipo"], self.img_path)
                 }
                 
     def preds_IA(self):
         preds = []
-        
         for i in range(self.filas):
             for j in range(self.columnas):
                 planta = self.huerto[i][j]
@@ -108,9 +107,6 @@ class HuertoVirtual:
             return self.huerto[x][y]
         else:
             return "Coordenadas fuera de rango."
-    def obtener_datos_sensor(self):
-        # Simula la lectura de sensores de humedad y temperatura.
-        return {"humedad": random.randint(45, 100), "temperatura": random.randint(15, 35)}
     
     def obtencion_img(self, tipo_planta, path):
             """Devuelve una imagen aleatoria del tipo de planta especificado."""
@@ -139,11 +135,21 @@ class HuertoVirtual:
         else:
             raise IndexError("Coordenadas fuera de rango.")
 
+    def obtener_datos_sensor_suelo(self):
+        return {"humedad": random.randint(45, 100), "temperatura": random.randint(15, 35)}
+    
+    def algoritmo_riego(self):
+        input_sensores = self.obtener_datos_sensor_suelo()
+        decision, razones = calcular_riego(input_sensores['humedad'], input_sensores['temperatura'], lluvia_1h , esta_lloviendo)
+        exportar_json(decision, razones)
+        
 def main():  
     huerto = HuertoVirtual(3, 3, 'Data')
     huerto.plantar()
     huerto.mostrar_huerto()
     print(huerto.preds_IA())
+    huerto.algoritmo_riego()
+    
 
 if __name__ == '__main__':
     main()
