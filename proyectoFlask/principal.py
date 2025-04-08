@@ -90,7 +90,7 @@ class HuertoVirtual:
                             output = modelo(imagen)
                             prediccion = torch.argmax(output, dim=1).item()
                             tipo_codificado = self.TIPO_PLANTA_CODIGO.get(planta["tipo"], -1)
-                            preds.append([[tipo_codificado], [prediccion]])
+                            preds.append([tipo_codificado, prediccion])
         
         self.predicciones = preds
         return preds
@@ -139,9 +139,27 @@ class HuertoVirtual:
         return {"humedad": random.randint(45, 100), "temperatura": random.randint(15, 35)}
     
     def algoritmo_riego(self):
-        input_sensores = self.obtener_datos_sensor_suelo()
-        decision, razones = calcular_riego(input_sensores['humedad'], input_sensores['temperatura'], lluvia_1h , esta_lloviendo)
-        exportar_json(decision, razones)
+        cont = 0
+        for i in range(self.filas):
+            for j in range(self.columnas):
+                cont+=1
+                datos_sensor = self.huerto[i][j]['sensor']
+                decision, razones = calcular_riego(datos_sensor['humedad'], datos_sensor['temperatura'], lluvia_1h , esta_lloviendo)
+                exportar_json(decision, razones, datos_sensor['temperatura'], datos_sensor['humedad'], cont)
+    
+    
+    def pred2bool(self, pred: list) -> list:
+        criterio_bueno = {
+            '1': 1,
+            '2': 1,
+            '0': 5
+        }
+
+        # Convertir a matriz 2D de booleanos
+        resultado = [[item[1] != criterio_bueno.get(item[0], None)] for item in pred]
+        return resultado
+            
+        
         
 def main():  
     huerto = HuertoVirtual(3, 3, 'Data')
@@ -149,6 +167,7 @@ def main():
     huerto.mostrar_huerto()
     print(huerto.preds_IA())
     huerto.algoritmo_riego()
+    print(huerto.pred2bool(huerto.preds_IA()))
     
 
 if __name__ == '__main__':

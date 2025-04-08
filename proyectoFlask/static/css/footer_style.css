@@ -1,0 +1,22 @@
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #000;
+}
+
+.footer-link {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
+
+.social-icons img {
+  width: 24px;
+  height: 24px;
+}

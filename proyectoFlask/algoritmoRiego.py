@@ -59,15 +59,15 @@ with open('clima.json', 'r') as f:
 
 # Extraer variables
 esta_lloviendo = datos.get('weather', [{}])[0].get('main') == 'Rain'
-humedad = datos.get('main', {}).get('humidity', 0)
-temp = datos.get('main', {}).get('temp', 20)
+# humedad = datos.get('main', {}).get('humidity', 0)
+# temp = datos.get('main', {}).get('temp', 20)
 lluvia_1h = datos.get('rain', {}).get('1h', 0)
 
 # # Calcular decisión
 # decision, razones = calcular_riego(humedad, temp, lluvia_1h, esta_lloviendo)
 
 # Generar output
-def exportar_json(decision, razones):
+def exportar_json(decision, razones, temp, humedad, nombre):
     resultado = {
         "riego_requerido": decision,
         "parametros": {
@@ -78,5 +78,5 @@ def exportar_json(decision, razones):
         "razones": razones,
         "alerta_meteorologica": esta_lloviendo
     }
-    with open('data.json', 'w') as f:
+    with open(f'dataRiego{nombre}.json', 'w') as f:
         json.dump(resultado, f, indent=4, ensure_ascii=False)

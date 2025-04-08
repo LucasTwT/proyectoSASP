@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %} gestión del huerto 
+<link
+href="{{ url_for('static', filename='css/datos_flotantes_style.css') }}"
+rel="stylesheet"
+/>
+<link href="{{ url_for('static', filename='css/huerto_virtual_style.css') }}"
+rel="stylesheet">
+{% endblock %} 
+
+{% block content %} 
+
+<!-- Estadisticas flotantes -->
+
+<h1 class="text-white text-center">Datos de Riego del Huerto</h1>
+<div class="ticker-container">
+    <div class="ticker text-white">
+      {% for nombre, valor in estadisticas.items() %}
+        <span class="ticker-item">{{ nombre }}: {{ valor }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Huerto virtual -->
+
+  <h1 class="text-white">Mi Huerto Virtual</h1>
+
+  <div class="garden-grid">
+      {% for i in range(3) %}
+        {% for j in range(3) %}
+        <div class="plant-tile">
+            <div class="plant-info text-white">
+                <strong>{{ plantas[i, j].tipo }}</strong><br>
+                <strong>{{ plantas[i, j]['requerimientos']['humedad'] }}</strong><br>
+                <strong>{{ plantas[i, j]['requerimientos']['temperatura'] }}</strong><br>
+          </div>
+      </div>
+      <br>
+      {% endfor %}
+      {% endfor %}
+  </div>
+
+{% endblock %}
