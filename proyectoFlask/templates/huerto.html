@@ -38,8 +38,38 @@ rel="stylesheet">
       {% endfor %}
   </div>
 
-  <div class="container text-center mt-5">
-    <img src="{{ url_for('static', filename='imgs/grafo_cultivos.png') }}" alt="Grafo fallido" height="700">
+  <div class="container-fluid mt-5 text-white">
+    <div class="row">
+      <div class="col text-center">
+        <img src="{{ url_for('static', filename='imgs/grafo_cultivos.png') }}" alt="Grafo fallido" height="700">
+      </div>
+      <div class="col">
+        <h1>Grafo de los cultivos (Total cultivos: {{plantas.filas*plantas.columnas}}):</h1>
+        <h3 class="text-center">Distancias:</h3>
+        <table class="table table-striped table-bordered">
+          <!-- Cabecera de la tabla -->
+          <thead>
+            <tr>
+              {% for i in range(plantas.columnas) %}
+                <th>Dist.Seccion{{i+1}}:</th>
+                <th>Enf.Seccion{{i+1}}:</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <!-- Cuerpo de la tabla con los datos -->
+          <tbody>
+            {% for i in range(plantas.filas) %}
+            <tr>
+              {% for j in range(plantas.columnas) %}
+              <td>Distancia: X</td>
+              <td>Tipo enfermedad</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>        
+      </div>
+    </div>
   </div>
 
 {% endblock %}

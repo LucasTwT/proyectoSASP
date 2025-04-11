@@ -1,12 +1,10 @@
 {
     "riego_requerido": false,
     "parametros": {
-        "humedad_suelo": 88,
-        "temperatura": 19,
+        "humedad_suelo": 56,
+        "temperatura": 22,
         "lluvia_1h": 0
     },
-    "razones": [
-        "Suelo sobresaturado"
-    ],
+    "razones": [],
     "alerta_meteorologica": false
 }

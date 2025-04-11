@@ -1,12 +1,10 @@
 {
     "riego_requerido": false,
     "parametros": {
-        "humedad_suelo": 64,
-        "temperatura": 34,
+        "humedad_suelo": 74,
+        "temperatura": 20,
         "lluvia_1h": 0
     },
-    "razones": [
-        "Temperatura elevada (34°C)"
-    ],
+    "razones": [],
     "alerta_meteorologica": false
 }

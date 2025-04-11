@@ -67,22 +67,47 @@ def crear_grafo(matriz_def, matriz_detalle, ruta_guardado):
 
     # Dibujar el grafo
     pos = nx.get_node_attributes(G, 'pos')
-    default_labels = {node: node if node != "Inicio" else "Inicio" for node in G.nodes()}
     
-    # Combinar etiquetas personalizadas (opcional)
-    labels = {**default_labels, **node_labels}
-    
+    # Crear etiquetas sin la etiqueta de "Inicio" (para evitar la "letra rara")
+    labels = {node: node_labels.get(node, node) for node in G.nodes() if node != "Inicio"}
+
     # Asegurar que "Inicio" tenga color gris
     node_colors_with_start = ["gray"] + node_colors
     
-    nx.draw(
-        G, pos, labels=labels, ax=ax,
-        node_size=800,
-        node_color=node_colors_with_start,
-        font_size=8,
-        font_weight="bold"
+    # Dibujar los nodos
+    nx.draw_networkx_nodes(
+        G, pos, nodelist=[node for node in G.nodes if node != "Inicio"],
+        node_size=800, node_color=node_colors_with_start[1:]
+    )
+    
+    # Dibujar el nodo de inicio con tamaño y color personalizado
+    nx.draw_networkx_nodes(
+        G, pos, nodelist=["Inicio"],
+        node_size=2000, node_color="gray"  # Nodo de inicio con tamaño mayor y color rojo
     )
 
+    # Dibujar las aristas (líneas)
+    nx.draw_networkx_edges(
+        G, pos, edge_color="#FFB74D"  # Línea de color naranja claro
+    )
+
+    # Etiquetas de los nodos, con "Inicio" en un tamaño y color diferente
+    nx.draw_networkx_labels(
+        G, pos, labels=labels,
+        font_size=8, font_color="white", font_weight="bold"
+    )
+    
+    # Etiqueta especial para "Inicio"
+    nx.draw_networkx_labels(
+        G, pos, labels={"Inicio": "Inicio"},
+        font_size=12, font_color="white", font_weight="bold"  # Etiqueta con tamaño mayor y color amarillo
+    )
+
+    # Fondo oscuro
+    fig.patch.set_facecolor('#0F1B12') 
+    ax.set_facecolor('#0F1B12')  # Asegurar que el fondo del gráfico también sea oscuro
+    plt.axis("off")
+    
     # Calcular rutas más cortas desde Inicio
     try:
         caminos = nx.single_source_dijkstra_path(G, "Inicio")
@@ -95,8 +120,10 @@ def crear_grafo(matriz_def, matriz_detalle, ruta_guardado):
     except nx.NodeNotFound:
         print("El nodo 'Inicio' no existe en el grafo.")
 
-    plt.title("Grafo de cultivos (3D)")
+    # Mostrar título
+    plt.title("Grafo de cultivos (3D)", weight='bold', color="white", style='italic', fontsize=20)
     plt.tight_layout()
-    fig.patch.set_facecolor('#4A6350') 
+
+    # Guardar la imagen
     plt.savefig(f"{ruta_guardado}/grafo_cultivos.png")
     return distancia

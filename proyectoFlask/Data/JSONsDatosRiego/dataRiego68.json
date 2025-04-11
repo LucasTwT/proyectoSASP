@@ -1,8 +1,8 @@
 {
     "riego_requerido": false,
     "parametros": {
-        "humedad_suelo": 97,
-        "temperatura": 16,
+        "humedad_suelo": 99,
+        "temperatura": 24,
         "lluvia_1h": 0
     },
     "razones": [

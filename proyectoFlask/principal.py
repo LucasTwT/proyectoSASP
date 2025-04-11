@@ -1,5 +1,4 @@
 import random
-import matplotlib.pyplot as plt
 import os
 import torch
 import albumentations as A
@@ -145,13 +144,6 @@ class HuertoVirtual:
             
             if not os.path.exists(categoria_path):
                 return "Imagen no encontrada"
-            
-            # subcarpetas = [os.path.join(categoria_path, sub) for sub in os.listdir(categoria_path) if os.path.isdir(os.path.join(categoria_path, sub))]
-            
-            # if not subcarpetas:
-            #     return "Imagen no encontrada"
-            
-            # subcarpeta_seleccionada = random.choice(subcarpetas)
             imagenes = [img for img in os.listdir(categoria_path) if img.endswith('.JPG')]
             
             if imagenes:

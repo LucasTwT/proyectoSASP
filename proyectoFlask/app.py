@@ -5,7 +5,7 @@ from principal import HuertoVirtual
 import json
 import datetime
 from crear_grafos import crear_grafo
-
+import numpy as np
 # Agrega la ruta del proyecto al PATH de Python
 ruta_proyecto = Path(__file__).parent.parent  # Ajusta según tu estructura
 sys.path.append(str(ruta_proyecto))
@@ -27,7 +27,7 @@ def gestion_huerto():
     data = carga_de_datos('Data/JSONsDatosRiego', (h.filas*h.columnas))
     estadisticas = stats(data, preds_bool)
     distancias = crear_grafo(preds_bool, preds, "static/imgs")
-    return render_template('huerto.html', estadisticas=estadisticas, plantas=h)
+    return render_template('huerto.html', estadisticas=estadisticas, plantas=h, distancias=distancias)
 
 def carga_de_datos(path, num):
     files = []
