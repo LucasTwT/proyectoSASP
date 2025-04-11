@@ -1,0 +1,12 @@
+{
+    "riego_requerido": false,
+    "parametros": {
+        "humedad_suelo": 83,
+        "temperatura": 29,
+        "lluvia_1h": 0
+    },
+    "razones": [
+        "Suelo sobresaturado"
+    ],
+    "alerta_meteorologica": false
+}

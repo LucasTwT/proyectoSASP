@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %} gestión del huerto 
+{% block title %}
+<title>Incio huerto</title>
 <link
 href="{{ url_for('static', filename='css/datos_flotantes_style.css') }}"
 rel="stylesheet"
@@ -11,7 +12,6 @@ rel="stylesheet">
 {% block content %} 
 
 <!-- Estadisticas flotantes -->
-
 <h1 class="text-white text-center">Datos de Riego del Huerto</h1>
 <div class="ticker-container">
     <div class="ticker text-white">
@@ -22,22 +22,24 @@ rel="stylesheet">
   </div>
 
   <!-- Huerto virtual -->
-
   <h1 class="text-white">Mi Huerto Virtual</h1>
-
   <div class="garden-grid">
-      {% for i in range(3) %}
-        {% for j in range(3) %}
-        <div class="plant-tile">
-            <div class="plant-info text-white">
-                <strong>{{ plantas[i, j].tipo }}</strong><br>
-                <strong>{{ plantas[i, j]['requerimientos']['humedad'] }}</strong><br>
-                <strong>{{ plantas[i, j]['requerimientos']['temperatura'] }}</strong><br>
+      {% for i in range(plantas.filas)%}
+        {% for j in range(plantas.columnas)%}
+          <div class="plant-tile">
+              <div class="plant-info">
+                  <strong>{{ plantas[i, j].tipo }}</strong><br>
+                  <strong>{{ plantas[i, j]['requerimientos']['humedad'] }}</strong><br>
+                  <strong>{{ plantas[i, j]['requerimientos']['temperatura'] }}</strong><br>
+            </div>
           </div>
-      </div>
-      <br>
+        <br>
+       {% endfor %}
       {% endfor %}
-      {% endfor %}
+  </div>
+
+  <div class="container text-center mt-5">
+    <img src="{{ url_for('static', filename='imgs/grafo_cultivos.png') }}" alt="Grafo fallido" height="700">
   </div>
 
 {% endblock %}

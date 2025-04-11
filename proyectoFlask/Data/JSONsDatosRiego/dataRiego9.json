@@ -1,0 +1,10 @@
+{
+    "riego_requerido": false,
+    "parametros": {
+        "humedad_suelo": 57,
+        "temperatura": 21,
+        "lluvia_1h": 0
+    },
+    "razones": [],
+    "alerta_meteorologica": false
+}

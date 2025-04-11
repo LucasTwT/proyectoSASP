@@ -10,7 +10,7 @@ url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appi
 respuesta = requests.get(url)
 data_clima = respuesta.json()
 
-with open("clima.json", "w") as archivo:
+with open("Data/clima.json", "w") as archivo:
     json.dump(data_clima, archivo)
 
 
@@ -54,7 +54,7 @@ def calcular_riego(humedad, temp, lluvia_1h, esta_lloviendo):
     return regar, razones
 
 # Cargar datos
-with open('clima.json', 'r') as f:
+with open('Data/clima.json', 'r') as f:
     datos = json.load(f)
 
 # Extraer variables
@@ -67,7 +67,7 @@ lluvia_1h = datos.get('rain', {}).get('1h', 0)
 # decision, razones = calcular_riego(humedad, temp, lluvia_1h, esta_lloviendo)
 
 # Generar output
-def exportar_json(decision, razones, temp, humedad, nombre):
+def exportar_json(decision, razones, temp, humedad, path, nombre):
     resultado = {
         "riego_requerido": decision,
         "parametros": {
@@ -78,5 +78,5 @@ def exportar_json(decision, razones, temp, humedad, nombre):
         "razones": razones,
         "alerta_meteorologica": esta_lloviendo
     }
-    with open(f'dataRiego{nombre}.json', 'w') as f:
+    with open(f'{path}/dataRiego{nombre}.json', 'w') as f:
         json.dump(resultado, f, indent=4, ensure_ascii=False)

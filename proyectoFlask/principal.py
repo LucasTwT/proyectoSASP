@@ -8,6 +8,8 @@ from albumentations.pytorch import ToTensorV2
 from torchvision import models
 import  torch.nn as nn
 from  algoritmoRiego import *
+import numpy as np
+
 if torch.cuda.is_available():
     device = 'cuda'
 else:
@@ -46,7 +48,31 @@ class HuertoVirtual:
         ]
         self.TIPO_PLANTA_CODIGO = {"Tomatos": 0, "Peppers": 1, "Potatos": 2}
         self.modelos = self.cargar_modelos()
-    
+        
+        self.salidas = {
+            0: {  # Tomates
+                0: 'mancha diana',
+                1: 'virus del mosaico del tomate',
+                2: 'virus del rizado amarillo de la hoja del tomate',
+                3: 'mancha bacteriana',
+                4: 'tizón temprano',
+                #5: 'sano',
+                6: 'tizón tardío',
+                7: 'moho de la hoja',
+                8: 'mancha foliar de Septoria',
+                9: 'ácaros rojos de dos manchas'
+            },
+            1: {  # Pimientos
+                0: 'mancha bacteriana',
+                #1: 'sano'
+            },
+            2: {  # Papas
+                0: 'tizón temprano',
+                #1: 'sano',
+                2: 'tizón tardío'
+            }
+        }
+
     def cargar_modelos(self):
         modelos = {}
         for planta in self.plantas_disponibles:
@@ -80,6 +106,7 @@ class HuertoVirtual:
     def preds_IA(self):
         preds = []
         for i in range(self.filas):
+            fila_pred = []
             for j in range(self.columnas):
                 planta = self.huerto[i][j]
                 if planta and planta["foto"] != "Imagen no encontrada":
@@ -90,10 +117,14 @@ class HuertoVirtual:
                             output = modelo(imagen)
                             prediccion = torch.argmax(output, dim=1).item()
                             tipo_codificado = self.TIPO_PLANTA_CODIGO.get(planta["tipo"], -1)
-                            preds.append([tipo_codificado, prediccion])
-        
+                            fila_pred.append([tipo_codificado, prediccion])
+                        continue
+                # Si no hay imagen o modelo, metemos valores por defecto
+                fila_pred.append([-1, -1])
+            preds.append(fila_pred)
         self.predicciones = preds
         return preds
+
 
     
     def mostrar_huerto(self):
@@ -115,16 +146,16 @@ class HuertoVirtual:
             if not os.path.exists(categoria_path):
                 return "Imagen no encontrada"
             
-            subcarpetas = [os.path.join(categoria_path, sub) for sub in os.listdir(categoria_path) if os.path.isdir(os.path.join(categoria_path, sub))]
+            # subcarpetas = [os.path.join(categoria_path, sub) for sub in os.listdir(categoria_path) if os.path.isdir(os.path.join(categoria_path, sub))]
             
-            if not subcarpetas:
-                return "Imagen no encontrada"
+            # if not subcarpetas:
+            #     return "Imagen no encontrada"
             
-            subcarpeta_seleccionada = random.choice(subcarpetas)
-            imagenes = [img for img in os.listdir(subcarpeta_seleccionada) if img.endswith('.JPG')]
+            # subcarpeta_seleccionada = random.choice(subcarpetas)
+            imagenes = [img for img in os.listdir(categoria_path) if img.endswith('.JPG')]
             
             if imagenes:
-                return os.path.join(subcarpeta_seleccionada, random.choice(imagenes))
+                return os.path.join(categoria_path, random.choice(imagenes))
             
             return "Imagen no encontrada"
         
@@ -145,30 +176,19 @@ class HuertoVirtual:
                 cont+=1
                 datos_sensor = self.huerto[i][j]['sensor']
                 decision, razones = calcular_riego(datos_sensor['humedad'], datos_sensor['temperatura'], lluvia_1h , esta_lloviendo)
-                exportar_json(decision, razones, datos_sensor['temperatura'], datos_sensor['humedad'], cont)
+                exportar_json(decision, razones, datos_sensor['temperatura'], datos_sensor['humedad'], 'Data/JSONsDatosRiego', cont)
     
     
     def pred2bool(self, pred: list) -> list:
         criterio_bueno = {
-            '1': 1,
-            '2': 1,
-            '0': 5
+            1: 1,
+            2: 1,
+            0: 5
         }
-
-        # Convertir a matriz 2D de booleanos
-        resultado = [[item[1] != criterio_bueno.get(item[0], None)] for item in pred]
+        resultado = []
+        for fila in pred:
+            fila_bool = []
+            for tipo, enf in fila:
+                fila_bool.append(enf != criterio_bueno.get(tipo, None))
+            resultado.append(fila_bool)
         return resultado
-            
-        
-        
-def main():  
-    huerto = HuertoVirtual(3, 3, 'Data')
-    huerto.plantar()
-    huerto.mostrar_huerto()
-    print(huerto.preds_IA())
-    huerto.algoritmo_riego()
-    print(huerto.pred2bool(huerto.preds_IA()))
-    
-
-if __name__ == '__main__':
-    main()
